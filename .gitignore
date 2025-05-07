@@ -1,0 +1,12 @@
+# .gitignore
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.DS_Store
+*.swp
+*.vs/
+.vscode/
+packages/
+TestResults/

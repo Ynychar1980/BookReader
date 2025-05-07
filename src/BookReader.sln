@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookReader.Core", "BookReader.Core\BookReader.Core.csproj", "{4E929FA8-E91B-42F3-BA7D-56A815856C86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookReader.Core.Tests", "..\tests\BookReader.Core.Tests\BookReader.Core.Tests.csproj", "{8D34C933-E992-99E0-71BA-B8BEDE0159B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E929FA8-E91B-42F3-BA7D-56A815856C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E929FA8-E91B-42F3-BA7D-56A815856C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E929FA8-E91B-42F3-BA7D-56A815856C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E929FA8-E91B-42F3-BA7D-56A815856C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D34C933-E992-99E0-71BA-B8BEDE0159B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D34C933-E992-99E0-71BA-B8BEDE0159B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D34C933-E992-99E0-71BA-B8BEDE0159B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D34C933-E992-99E0-71BA-B8BEDE0159B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F9FAE44-D429-4E95-875E-2B8CA3267A20}
+	EndGlobalSection
+EndGlobal
