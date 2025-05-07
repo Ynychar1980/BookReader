@@ -3,6 +3,7 @@ using BookReader.Core.Models;
 using BookReader.Core.Services;
 using BookReader.Core.Utilities;
 using SharpCompress.Archives;
+using HtmlAgilityPack;
 
 namespace BookReader.Core.Parsers;
 
@@ -22,7 +23,10 @@ public class EpubParser : IBookParser
             var opfContent = new StreamReader(opfEntry.OpenEntryStream()).ReadToEnd();
             var metadata = ParseOpfMetadata(opfContent);
 
-            // 3. Извлекаем главы
+            // 3. Извлекаем CSS-файлы
+            var cssFiles = ExtractCssFiles(archive);
+
+            // 4. Извлекаем главы
             var chapters = new List<Chapter>();
             foreach (var item in metadata.SpineItems)
             {
@@ -30,25 +34,30 @@ public class EpubParser : IBookParser
                 if (entry == null) continue;
 
                 var content = new StreamReader(entry.OpenEntryStream()).ReadToEnd();
-                chapters.Add(new Chapter { Title = item, Content = content });
 
-                return new Book
-                {
-                    Title = metadata.Title,
-                    Author = metadata.Author,
-                    Chapters = chapters,
-                    CoverImage = LoadCover(archive, metadata.CoverPath),
-                    FilePath = filePath
-                };
+                // 5. добавляем CSS-стили
+                var processedContent = ProcessChapterContent(content, cssFiles);
+
+                chapters.Add(new Chapter {
+                    Title = item,
+                    Content = processedContent
+                });
             }
+
+            return new Book
+            {
+                Title = metadata.Title,
+                Author = metadata.Author,
+                Chapters = chapters,
+                CoverImage = LoadCover(archive, metadata.CoverPath),
+                FilePath = filePath
+            };
         }
         catch (Exception ex)
         {
             LoggerService.LogError("Ошибка парсинга EPUB", ex);
             throw;
         }
-
-        return null; // ???????
     }
 
     private byte[] LoadCover(IArchive archive, string coverPath)
@@ -94,5 +103,39 @@ public class EpubParser : IBookParser
         }
 
         return metadata;
+    }
+
+    private List<string> ExtractCssFiles(IArchive archive)
+    {
+        return archive.Entries
+            .Where(e => e.Key.EndsWith(".css"))
+            .Select(e => e.Key)
+            .ToList();
+    }
+
+    private string ProcessChapterContent(string htmlContent, List<string> cssFiles)
+    {
+        if (string.IsNullOrEmpty(htmlContent)) return htmlContent;
+
+        var htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(htmlContent);
+
+        var headNode = htmlDoc.DocumentNode.SelectSingleNode("//head");
+
+        // Если нет тега head - создаем его
+        if (headNode == null)
+        {
+            headNode = HtmlNode.CreateNode("<head></head>");
+            htmlDoc.DocumentNode.InsertBefore(headNode, htmlDoc.DocumentNode.FirstChild);
+        }
+
+        // Добавляем CSS-ссылки
+        foreach (var cssPath in cssFiles)
+        {
+            var linkTag = $"<link rel='stylesheet' href='{cssPath}'>";
+            headNode.AppendChild(HtmlNode.CreateNode(linkTag));
+        }
+
+        return htmlDoc.DocumentNode.OuterHtml;
     }
 }
